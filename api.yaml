@@ -1,0 +1,1712 @@
+openapi: 3.1.0
+servers:
+  - url: https://open-api.p-h.app/api/v2
+    # description: loyaltyAPI - для интеграции кассового ПО и сайта/приложения доставки с PRIME HILL. 
+info:
+  description: |
+    Тут будет описание
+  version: 2.0.0
+  title: openAPI
+  x-logo:
+    url: './logo_dark.png'
+    altText: PrimeHill logo
+x-tagGroups:
+  - name: Оглавление
+    tags:
+      - Регистрация данных
+      - Справочники
+      - Гости / Клиенты
+      - Заказы
+security:
+  - {}
+paths:
+  /ping:
+    get:
+      tags:
+        - Регистрация данных
+      summary: Проверка соединения
+      description: Позволяет проверить доступность сервера openAPI и работоспособность токена. 
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/ping'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /updateRegistrationOrganisation:
+    post:
+      tags:
+        - Регистрация данных
+      summary: Регистрация точки продаж 
+      description: Позволяет зарегистрировать точку продаж за openAPI токеном. 
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+      requestBody:
+        $ref: '#/components/requestBodies/updateRegistrationOrganisation'
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/updateRegistrationOrganisation'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /getTemplates:
+    get:
+      tags:
+        - Справочники
+      summary: Список макетов
+      description: Позволяет получить список макетов
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/getTemplates'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /getTags: 
+    get:
+      tags:
+        - Справочники
+      summary: Список тегов
+      description: Позволяет получить список тегов
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/getTags'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /getTag: 
+    get:
+      tags:
+        - Справочники
+      summary: Тег
+      description: Позволяет получить наименование тега
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+        - in: query
+          name: id
+          description: ID тега
+          required: true
+          schema:
+            type: string
+            example: 1254
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/getTag'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /createTags: 
+    post:
+      tags:
+        - Справочники
+      summary: Создать теги
+      description: Позволяет создать новые теги
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+      requestBody:
+        $ref: '#/components/requestBodies/createTags'
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/createTags'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /updateVars: 
+    post:
+      tags:
+        - Справочники
+      summary: Обновление переменных
+      description: Позволяет обновить значение переменных у клиентов
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+      requestBody:
+        description: Всего есть 3 типа переменных - var, num, date. Передавайте переменные, которые нужно обновить. 
+        $ref: '#/components/requestBodies/updateVars'
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/updateVars'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /clientInfo:
+    get:
+      tags:
+        - Гости / Клиенты
+      summary: Информация по клиенту
+      description: Позволяет получить информацию по клиенту. Для поиска клиента обязательный для заполнения один из параметров clientId или cardBarcode или cardNumber или phone.
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+        - in: query
+          name: type
+          description: Критерий поиска клиента
+          schema:
+            type: string
+            enum: ['clientId', 'cardBarcode', 'cardNumber', 'phone']
+            example: "phone"
+        - in: query
+          name: id
+          required: true
+          description: Значение поля указанного в параметре "type"
+          schema:
+            type: string
+            example: "79777121350"
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/clientInfo'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /getAllClients:
+    get:
+      tags:
+        - Гости / Клиенты
+      summary: Получить всех клиентов
+      description: Позволяет получить список всех клиентов.
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+        - in: query
+          name: limit
+          description: Количество клиентов в ответе
+          schema:
+            type: string
+            example: 100
+        - in: query
+          name: offset
+          description: Смещение количества возвращаемых клиентов
+          schema:
+            type: string
+            example: 0
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/getAllClients'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /getNewClients:
+    get:
+      tags:
+        - Гости / Клиенты
+      summary: Получить новых клиентов клиентов
+      description: Позволяет получить список всех новых и изменненых клиентов. При получении клиента, клиент перестает быть новым или измененным
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: limit
+          description: Количество клиентов в ответе
+          schema:
+            type: string
+            example: 100
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/getNewClients'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /createClients:
+    post:
+      tags:
+        - Гости / Клиенты
+      summary: Создать новых клиентов
+      description: Позволяет создать клиентов.
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+      requestBody:
+        $ref: '#/components/requestBodies/createClients'
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/createClients'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /updateClients:
+    post:
+      tags:
+        - Гости / Клиенты
+      summary: Обновить клиентов
+      description: Позволяет обновить данные клиентов.
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+      requestBody:
+        $ref: '#/components/requestBodies/updateClients'
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/updateClients'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /createOrder:
+    post:
+      tags:
+        - Заказы
+      summary: Создать заказ
+      description: Позволяет создать заказ
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+        - in: query
+          name: type
+          description: Критерий поиска клиента
+          schema:
+            type: string
+            enum: ['clientId', 'cardBarcode', 'cardNumber', 'phone']
+            example: "phone"
+        - in: query
+          name: id
+          required: true
+          description: Значение поля указанного в параметре "type"
+          schema:
+            type: string
+            example: "79777121350"
+      requestBody:
+        $ref: '#/components/requestBodies/createOrder'
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/createOrder'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /updateOrder:
+    post:
+      tags:
+        - Заказы
+      summary: Изменить заказ
+      description: Позволяет изменить заказ
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+        - in: query
+          name: type
+          description: Критерий поиска клиента
+          schema:
+            type: string
+            enum: ['clientId', 'cardBarcode', 'cardNumber', 'phone']
+            example: "phone"
+        - in: query
+          name: id
+          required: true
+          description: Значение поля указанного в параметре "type"
+          schema:
+            type: string
+            example: "79777121350"
+      requestBody:
+        $ref: '#/components/requestBodies/updateOrder'
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/updateOrder'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /returnOrder:
+    post:
+      tags:
+        - Заказы
+      summary: Отменить заказ
+      description: Позволяет отменить заказ
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+      requestBody:
+        $ref: '#/components/requestBodies/returnOrder'
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/returnOrder'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /returnCart:
+    post:
+      tags:
+        - Заказы
+      summary: Возврат товара
+      description: Позволяет провести возврат товара
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+        - in: query
+          name: type
+          description: Критерий поиска клиента
+          schema:
+            type: string
+            enum: ['clientId', 'cardBarcode', 'cardNumber', 'phone']
+            example: "phone"
+        - in: query
+          name: id
+          required: true
+          description: Значение поля указанного в параметре "type"
+          schema:
+            type: string
+            example: "79777121350"
+      requestBody:
+        $ref: '#/components/requestBodies/returnCart'
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/returnCart'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /updateReturnCart: 
+    post:
+      tags:
+        - Заказы
+      summary: Обновить возврат товара
+      description: Позволяет провести обновление возврата товара
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+        - in: query
+          name: type
+          description: Критерий поиска клиента
+          schema:
+            type: string
+            enum: ['clientId', 'cardBarcode', 'cardNumber', 'phone']
+            example: "phone"
+        - in: query
+          name: id
+          required: true
+          description: Значение поля указанного в параметре "type"
+          schema:
+            type: string
+            example: "79777121350"
+      requestBody:
+        $ref: '#/components/requestBodies/updateReturnCart'
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/updateReturnCart'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+  /getNewOrder:
+    get:
+      tags:
+        - Заказы
+      summary: Получить новые транзакции
+      description: Позволяет получить список новых транзакций
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            example: 1111-pppp-3333-gggg
+        - in: query
+          name: limit
+          required: true
+          description: Количество тарнзакции в ответе
+          schema:
+            type: string
+            example: 100
+        - in: query
+          name: cart
+          description: Баркод карты клиента
+          schema:
+            type: string
+            example: true
+            enum: [true]
+      responses:
+        '200':
+          $ref: '#/components/succesResponses/getNewOrder'
+        '400':
+          $ref: '#/components/errorResponses/error400'
+        '401':
+          $ref: '#/components/errorResponses/error401'
+      security:
+        - token: [ ]
+
+components:  
+  schemas:    
+    # Статусы и тексты ошибок 400 - 401
+    ErrorJsonData: 
+      type: object
+      properties:
+        error: 
+          type: object
+          properties:
+            errorId:
+              type: integer
+              enum: [400]
+              example: 400
+            message:
+              type: string
+              enum: ['token: The token field is required.']
+              example: 'token: The token field is required.'  
+    AuthorizationError: 
+      type: object
+      properties:
+        error: 
+          type: object
+          properties:
+            errorId:
+              type: integer
+              enum: [401]
+              example: 401
+            message:
+              type: string
+              enum: ['API token not found.']
+              example: 'API token not found.'
+
+  requestBodies:
+    updateRegistrationOrganisation:
+      content:
+        application/json:
+          schema:
+            type: 'object'
+            required:
+              - OrganizationId
+              - PluginVersion
+              - Products
+            properties:
+              organisationId:
+                description: GUID/UUID/ID точки продаж
+                type: string
+                example: '1111-GGGG-2222-RRRR'
+              organisationName: 
+                description: Наименование точки продаж
+                type: string
+                example: 'Магазин #1'
+              versionPlugin:
+                description: Версия плагина / интеграции
+                type: string
+                example: '1.1'
+              integrationSoftName:
+                description: Наименование ПО с которым проводится интеграция
+                type: string
+                example: '1С:Розница'
+              versionIntegrationSoft:
+                description: Версия ПО с которым проводится интеграция
+                type: string
+                example: '2.3.14.0'
+    createTags: 
+      content:
+        application/json:
+          schema:
+            type: 'object'
+            properties:
+              tags:
+                description: Список тегов
+                type: array
+                items:
+                  description: Наименование тега
+                  type: string
+                  example: 'Любит булочки'
+    updateVars: 
+      content:
+        application/json:
+          schema:
+            type: 'object'
+            properties:
+              clients:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    clientId:
+                      description: ID клиента
+                      type: integer
+                      example: 1234
+                    var1:
+                      description: Изменяемая переменная
+                      type: string
+                      example: 'WIN: XZ000291LD123'
+                    var2:
+                      description: Марка
+                      type: string
+                      example: 'Mercedes'
+    createClients: 
+      content:
+        application/json:
+          schema:
+            type: 'object'
+            required:
+              - clients
+            properties:
+              clients:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - lastName
+                    - firstName
+                    - patronymic
+                    - birthday
+                    - sex
+                    - email
+                    - phone
+                    - templateId
+                    - cardNumber
+                    - cardBarcode
+                    - comment
+                    - parent
+                    - tags
+                  properties:
+                    lastName:
+                      description: Фамилиия
+                      type: string
+                      example: 'Чехов'
+                    firstName:
+                      description: Имя                      
+                      type: string
+                      example: 'Антон'
+                    patronymic:
+                      description: Отчество                      
+                      type: string
+                      example: 'Павлович'
+                    birthday:
+                      description: Дата рождения                      
+                      type: date
+                      example: '2020-01-01'
+                    sex:
+                      description: Пол                      
+                      type: integer
+                      example: '1'
+                    email:
+                      description: E-mail
+                      type: string
+                      example: 'info@prime-hill.com'
+                    phone:
+                      description: Телефон клиента 
+                      type: string
+                      example: '79777121350'                
+                    templateId: 
+                      description: ID макета карты
+                      type: integer
+                      example: 123
+                    cardNumber:
+                      description: Номер карты клиента (Оставить пустым, чтобы сгенерировать номер через PH)
+                      type: string
+                      example: '1234'
+                    cardBarcode:
+                      description: Баркод карты клиента (Оставить пустым, чтобы сгенерировать баркод через PH)
+                      type: string
+                      example: '1234'
+                    comment:
+                      description: Комментарий
+                      type: string
+                      example: 'Посещает только на закате'
+                    parent: 
+                      description: ClientID Родителя (Реферера, рекомендателя)
+                      type: string
+                      example: '12351'
+                    tags:
+                      description: Теги
+                      type: array
+                      items:
+                        description: ID тега
+                        type: integer
+                        example: '3812'
+    updateClients: 
+      content:
+        application/json:
+          schema:
+            type: 'object'
+            properties:
+              clients:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    clientId:
+                      description: ID клиента
+                      type: integer
+                      example: 1234
+                    lastName:
+                      description: Фамилиия
+                      required: true
+                      type: string
+                      example: 'Чехов'
+                    firstName:
+                      description: Имя
+                      required: true
+                      type: string
+                      example: 'Антон'
+                    patronymic:
+                      description: Отчество
+                      required: true
+                      type: string
+                      example: 'Павлович'
+                    birthday:
+                      description: Дата рождения
+                      required: true
+                      type: date
+                      example: '2020-01-01'
+                    sex:
+                      description: Пол
+                      required: true
+                      type: integer
+                      example: '1'
+                    email:
+                      description: E-mail
+                      required: true
+                      type: string
+                      example: 'info@prime-hill.com'
+                    phone:
+                      description: Телефон клиента
+                      required: true
+                      type: string
+                      example: '79777121350'                
+                    templateId: 
+                      description: ID макета карты
+                      type: integer
+                      example: 123
+                    cardNumber:
+                      description: Номер карты клиента (Оставить пустым, чтобы сгенерировать номер через PH)
+                      required: true
+                      type: string
+                      example: '1234'
+                    cardBarcode:
+                      description: Баркод карты клиента (Оставить пустым, чтобы сгенерировать баркод через PH)
+                      required: true
+                      type: string
+                      example: '1234'
+                    comment:
+                      description: Комментарий
+                      required: true
+                      type: string
+                      example: 'Посещает только на закате'
+                    parent: 
+                      description: ClientID Родителя (Реферера, рекомендателя)
+                      required: true
+                      type: string
+                      example: '12351'
+                    tags:
+                      description: Теги
+                      required: true
+                      type: array
+                      items:
+                        description: ID тега
+                        type: integer
+                        example: '3812'
+    createOrder:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              guid:
+                description: ID заказа / визита / чека
+                type: string
+                example: "FF123aa4"
+              number:
+                description: Номер заказа / визита / чека
+                type: string
+                example: "123"
+              date:
+                description: Дата закрытия заказа / визита / чека
+                type: date
+                example: '2020-01-01'
+              sum:
+                description: Сумма чека без скидки
+                type: float
+                example: 100.00
+              sumDiscount:
+                description: Сумма чека со скидкой
+                type: float
+                example: 90.00
+              bonusAdd: 
+                description: Начисление на бонусный счет
+                type: float
+                example: 9.00
+              bonusWriteOff: 
+                description: Списание с бонусного счета
+                type: float
+                example: 0.00
+              depositAdd: 
+                description: Начисление на депозитный счет
+                type: float
+                example: 0.00
+              depositWriteOff:
+                description: Списание с депозитного счета
+                type: float
+                example: 0.00
+              cart:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name: 
+                      description: Наименование номенклатуры
+                      type: string
+                      example: "Булочка с кунжутом"
+                    nid:
+                      description: ID номенклатуры
+                      type: string
+                      example: "FF123aa4"
+                    groupId:
+                      description: ID группы/категории номенклатуры
+                      type: string
+                      example: "FF123aa4"
+                    groupName: 
+                      description: Наименование группы/категории номенклатуры
+                      type: string
+                      example: "Булочки"
+                    price: 
+                      description: Цена за единицу
+                      type: float
+                      example: 100.00
+                    priceWithDiscount: 
+                      description: Цена за единицу со скидкой
+                      type: float
+                      example: 900.00
+                    amount: 
+                      description: Количество
+                      type: float
+                      example: 1.00
+    updateOrder:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              guid:
+                description: ID заказа / визита / чека
+                type: string
+                example: "FF123aa4"
+              number:
+                description: Номер заказа / визита / чека
+                type: string
+                example: "123"
+              date:
+                description: Дата закрытия заказа / визита / чека
+                type: date
+                example: '2020-01-01'
+              sum:
+                description: Сумма чека без скидки
+                type: float
+                example: 100.00
+              sumDiscount:
+                description: Сумма чека со скидкой
+                type: float
+                example: 90.00
+              bonusAdd: 
+                description: Начисление на бонусный счет
+                type: float
+                example: 9.00
+              bonusWriteOff: 
+                description: Списание с бонусного счета
+                type: float
+                example: 0.00
+              depositAdd: 
+                description: Начисление на депозитный счет
+                type: float
+                example: 0.00
+              depositWriteOff:
+                description: Списание с депозитного счета
+                type: float
+                example: 0.00
+              cart:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name: 
+                      description: Наименование номенклатуры
+                      type: string
+                      example: "Булочка с кунжутом"
+                    nid:
+                      description: ID номенклатуры
+                      type: string
+                      example: "FF123aa4"
+                    groupId:
+                      description: ID группы/категории номенклатуры
+                      type: string
+                      example: "FF123aa4"
+                    groupName: 
+                      description: Наименование группы/категории номенклатуры
+                      type: string
+                      example: "Булочки"
+                    price: 
+                      description: Цена за единицу
+                      type: float
+                      example: 100.00
+                    priceWithDiscount: 
+                      description: Цена за единицу со скидкой
+                      type: float
+                      example: 900.00
+                    amount: 
+                      description: Количество
+                      type: float
+                      example: 1.00
+    returnOrder:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              guid:
+                description: ID заказа / визита / чека
+                type: string
+                example: "FF123aa4"
+              date:
+                description: Дата закрытия заказа / визита / чека
+                type: date
+                example: '2020-01-01'
+              sum:
+                description: Сумма чека без скидки
+                type: float
+                example: 100.00
+    returnCart:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              guid:
+                description: ID заказа / визита / чека
+                type: string
+                example: "FF123aa4"
+              number:
+                description: Номер заказа / визита / чека
+                type: string
+                example: "123"
+              date:
+                description: Дата закрытия заказа / визита / чека
+                type: date
+                example: '2020-01-01'
+              sum:
+                description: Сумма чека без скидки
+                type: float
+                example: 100.00
+              sumDiscount:
+                description: Сумма чека со скидкой
+                type: float
+                example: 90.00
+              bonusAdd: 
+                description: Начисление на бонусный счет
+                type: float
+                example: 9.00
+              bonusWriteOff: 
+                description: Списание с бонусного счета
+                type: float
+                example: 0.00
+              depositAdd: 
+                description: Начисление на депозитный счет
+                type: float
+                example: 0.00
+              depositWriteOff:
+                description: Списание с депозитного счета
+                type: float
+                example: 0.00
+              cart:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name: 
+                      description: Наименование номенклатуры
+                      type: string
+                      example: "Булочка с кунжутом"
+                    nid:
+                      description: ID номенклатуры
+                      type: string
+                      example: "FF123aa4"
+                    groupId:
+                      description: ID группы/категории номенклатуры
+                      type: string
+                      example: "FF123aa4"
+                    groupName: 
+                      description: Наименование группы/категории номенклатуры
+                      type: string
+                      example: "Булочки"
+                    price: 
+                      description: Цена за единицу
+                      type: float
+                      example: 100.00
+                    priceWithDiscount: 
+                      description: Цена за единицу со скидкой
+                      type: float
+                      example: 900.00
+                    amount: 
+                      description: Количество
+                      type: float
+                      example: 1.00
+    updateReturnCart:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              guid:
+                description: ID заказа / визита / чека
+                type: string
+                example: "FF123aa4"
+              number:
+                description: Номер заказа / визита / чека
+                type: string
+                example: "123"
+              date:
+                description: Дата закрытия заказа / визита / чека
+                type: date
+                example: '2020-01-01'
+              sum:
+                description: Сумма чека без скидки
+                type: float
+                example: 100.00
+              sumDiscount:
+                description: Сумма чека со скидкой
+                type: float
+                example: 90.00
+              bonusAdd: 
+                description: Начисление на бонусный счет
+                type: float
+                example: 9.00
+              bonusWriteOff: 
+                description: Списание с бонусного счета
+                type: float
+                example: 0.00
+              depositAdd: 
+                description: Начисление на депозитный счет
+                type: float
+                example: 0.00
+              depositWriteOff:
+                description: Списание с депозитного счета
+                type: float
+                example: 0.00
+              cart:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name: 
+                      description: Наименование номенклатуры
+                      type: string
+                      example: "Булочка с кунжутом"
+                    nid:
+                      description: ID номенклатуры
+                      type: string
+                      example: "FF123aa4"
+                    groupId:
+                      description: ID группы/категории номенклатуры
+                      type: string
+                      example: "FF123aa4"
+                    groupName: 
+                      description: Наименование группы/категории номенклатуры
+                      type: string
+                      example: "Булочки"
+                    price: 
+                      description: Цена за единицу
+                      type: float
+                      example: 100.00
+                    priceWithDiscount: 
+                      description: Цена за единицу со скидкой
+                      type: float
+                      example: 900.00
+                    amount: 
+                      description: Количество
+                      type: float
+                      example: 1.00
+
+
+  errorResponses:
+    error400: 
+      description: error data
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorJsonData"
+    error401:
+      description: error authorization
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AuthorizationError"
+  succesResponses:
+    ping:
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              response: 
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    enum: [1]
+                    example: 1
+                  message:
+                    type: string
+                    example: 'Token ok'
+    updateRegistrationOrganisation: 
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              response: 
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    enum: [0,1]
+                    example: 1
+                  message:
+                    type: string
+                    example: 'Registration Ok'
+    getTemplates:
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  description: ID макета 
+                  type: integer
+                  enum: [123]
+                  example: 123
+                name:
+                  description: Наименовние макета
+                  type: string
+                  example: 'Скидка 5%'
+    getTags:
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              tags:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tagId:
+                      description: ID тега 
+                      type: integer
+                      example: 123
+                    tagName:
+                      description: Наименовние тега
+                      type: string
+                      example: 'Любит булочки'
+    getTag:
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              tagName:
+                description: Наименование тега
+                type: string
+                example: 'Любит булочки'
+    createTags: 
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              name:
+                description: Наименование тега
+                type: string
+                example: 'Любит булочки'
+              id: 
+                description: ID тега 
+                type: integer
+                example: 123
+              status:
+                description: Статус
+                type: string
+                example: 'exists'
+                enum: ['exists','new']
+    updateVars:
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              response:
+                type: string
+                example: 'ok'
+    clientInfo:
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              clientId:
+                description: ID клиента
+                type: integer
+                example: 1234
+              templateId: 
+                description: ID макета карты
+                type: integer
+                example: 123
+              templateName:
+                description: Наименование макета карты
+                type: string
+                example: 'Бонусы 5%'
+              cardNumber:
+                description: Номер карты клиента
+                type: string
+                example: '1234'
+              cardBarcode:
+                description: Баркод карты клиента
+                type: string
+                example: '1234'
+              phone:
+                description: Телефон клиента
+                type: string
+                example: '79777121350'
+              lastName:
+                description: Фамилиия
+                type: string
+                example: 'Чехов'
+              firstName:
+                description: Имя
+                type: string
+                example: 'Антон'
+              patronymic:
+                description: Отчество
+                type: string
+                example: 'Павлович'
+              email:
+                description: E-mail
+                type: string
+                example: 'info@prime-hill.com'
+              sex:
+                description: Пол
+                type: integer
+                example: '1'
+              birthday:
+                description: Дата рождения
+                type: date
+                example: '2020-01-01'
+              comment:
+                description: Комментарий
+                type: string
+                example: 'Посещает только на закате'
+              tags:
+                description: Теги
+                type: array
+                items:
+                  description: ID тега
+                  type: integer
+                  example: '3812'
+              bonusBalance:
+                description: Баланс бонусов
+                type: float
+                example: 20.00
+              maxPercentBonusWriteOff:
+                description: Баланс бонусов доступный к списанию
+                type: float
+                example: 20.00
+              discountPercent:
+                description: Процент скидки
+                type: float
+                example: 10.00
+              depositBalance:
+                description: Баланс депозита
+                type: float
+                example: 20.00
+              sumAllDisсount:
+                description: Сумма покупок с учетом скидкок
+                type: float
+                example: 2000.00
+    getAllClients:
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              clients:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    clientId:
+                      description: ID клиента
+                      type: integer
+                      example: 1234
+                    hash:
+                      description: HASH ссылки на карту (https://form.p-h.app/plug/{hash})
+                      type: string
+                      example: ac58788feba48f5a307d670cb3bf02111231
+                    status:
+                      description: Статус карты (0 - создана, 1 - активна, 2 - не активна, 3 - заблокирована)
+                      type: integer
+                      enum: [0,1,2,3]
+                      example: 1
+                    templateId: 
+                      description: ID макета карты
+                      type: integer
+                      example: 123
+                    cardNumber:
+                      description: Номер карты клиента
+                      type: string
+                      example: '1234'
+                    cardBarcode:
+                      description: Баркод карты клиента
+                      type: string
+                      example: '1234'
+                    lastName:
+                      description: Фамилиия
+                      type: string
+                      example: 'Чехов'
+                    firstName:
+                      description: Имя
+                      type: string
+                      example: 'Антон'
+                    patronymic:
+                      description: Отчество
+                      type: string
+                      example: 'Павлович'
+                    birthday:
+                      description: Дата рождения
+                      type: date
+                      example: '2020-01-01'
+                    sex:
+                      description: Пол
+                      type: integer
+                      example: '1'
+                    email:
+                      description: E-mail
+                      type: string
+                      example: 'info@prime-hill.com'
+                    phone:
+                      description: Телефон клиента
+                      type: string
+                      example: '79777121350'
+                    comment:
+                      description: Комментарий
+                      type: string
+                      example: 'Посещает только на закате'
+                    tags:
+                      description: Теги
+                      type: array
+                      items:
+                        description: ID тега
+                        type: integer
+                        example: '3812'
+    getNewClients:
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              clients:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    clientId:
+                      description: ID клиента
+                      type: integer
+                      example: 1234
+                    hash:
+                      description: HASH ссылки на карту (https://form.p-h.app/plug/{hash})
+                      type: string
+                      example: ac58788feba48f5a307d670cb3bf02111231
+                    status:
+                      description: Статус карты (0 - создана, 1 - активна, 2 - не активна, 3 - заблокирована)
+                      type: integer
+                      enum: [0,1,2,3]
+                      example: 1
+                    templateId: 
+                      description: ID макета карты
+                      type: integer
+                      example: 123
+                    cardNumber:
+                      description: Номер карты клиента
+                      type: string
+                      example: '1234'
+                    cardBarcode:
+                      description: Баркод карты клиента
+                      type: string
+                      example: '1234'
+                    lastName:
+                      description: Фамилиия
+                      type: string
+                      example: 'Чехов'
+                    firstName:
+                      description: Имя
+                      type: string
+                      example: 'Антон'
+                    patronymic:
+                      description: Отчество
+                      type: string
+                      example: 'Павлович'
+                    birthday:
+                      description: Дата рождения
+                      type: date
+                      example: '2020-01-01'
+                    sex:
+                      description: Пол
+                      type: integer
+                      example: '1'
+                    email:
+                      description: E-mail
+                      type: string
+                      example: 'info@prime-hill.com'
+                    phone:
+                      description: Телефон клиента
+                      type: string
+                      example: '79777121350'
+                    comment:
+                      description: Комментарий
+                      type: string
+                      example: 'Посещает только на закате'
+                    tags:
+                      description: Теги
+                      type: array
+                      items:
+                        description: ID тега
+                        type: integer
+                        example: '3812'
+    createClients:
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              clients:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    clientId:
+                      description: ID клиента
+                      type: integer
+                      example: 1234
+                    hash:
+                      description: HASH ссылки на карту (https://form.p-h.app/plug/{hash})
+                      type: string
+                      example: ac58788feba48f5a307d670cb3bf02111231
+                    cardNumber:
+                      description: Номер карты клиента
+                      type: string
+                      example: '1234'
+                    cardBarcode:
+                      description: Баркод карты клиента
+                      type: string
+                      example: '1234'
+                    phone:
+                      description: Телефон клиента
+                      type: string
+                      example: '79777121350'
+    updateClients:
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              clients:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    clientId:
+                      description: ID клиента
+                      type: integer
+                      example: 1234
+                    hash:
+                      description: HASH ссылки на карту (https://form.p-h.app/plug/{hash})
+                      type: string
+                      example: ac58788feba48f5a307d670cb3bf02111231
+                    cardNumber:
+                      description: Номер карты клиента
+                      type: string
+                      example: '1234'
+                    cardBarcode:
+                      description: Баркод карты клиента
+                      type: string
+                      example: '1234'
+                    phone:
+                      description: Телефон клиента
+                      type: string
+                      example: '79777121350'
+    createOrder:
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              response:
+                type: object
+                properties:
+                  guid:
+                    description: ID заказа
+                    type: string
+                    example: "1234"
+    updateOrder:
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              response:
+                type: object
+                properties:
+                  guid:
+                    description: ID заказа
+                    type: string
+                    example: "1234"
+    returnOrder: 
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              response:
+                type: object
+                properties:
+                  guid:
+                    description: ID заказа
+                    type: string
+                    example: "1234"
+    returnCart:
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              response:
+                type: object
+                properties:
+                  guid:
+                    description: ID заказа
+                    type: string
+                    example: "1234"
+    updateReturnCart:
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              response:
+                type: object
+                properties:
+                  guid:
+                    description: ID заказа
+                    type: string
+                    example: "1234"
+    getNewOrder:
+      description: succes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              guid:
+                description: ID заказа / визита / чека
+                type: string
+                example: "FF123aa4"
+              number:
+                description: Номер заказа / визита / чека
+                type: string
+                example: "123"
+              date:
+                description: Дата закрытия заказа / визита / чека
+                type: date
+                example: '2020-01-01'
+              sum:
+                description: Сумма чека без скидки
+                type: float
+                example: 100.00
+              sumDiscount:
+                description: Сумма чека со скидкой
+                type: float
+                example: 90.00
+              bonusAdd: 
+                description: Начисление на бонусный счет
+                type: float
+                example: 9.00
+              bonusWriteOff: 
+                description: Списание с бонусного счета
+                type: float
+                example: 0.00
+              depositAdd: 
+                description: Начисление на депозитный счет
+                type: float
+                example: 0.00
+              depositWriteOff:
+                description: Списание с депозитного счета
+                type: float
+                example: 0.00
+              cart:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name: 
+                      description: Наименование номенклатуры
+                      type: string
+                      example: "Булочка с кунжутом"
+                    nid:
+                      description: ID номенклатуры
+                      type: string
+                      example: "FF123aa4"
+                    groupId:
+                      description: ID группы/категории номенклатуры
+                      type: string
+                      example: "FF123aa4"
+                    groupName: 
+                      description: Наименование группы/категории номенклатуры
+                      type: string
+                      example: "Булочки"
+                    price: 
+                      description: Цена за единицу
+                      type: float
+                      example: 100.00
+                    priceWithDiscount: 
+                      description: Цена за единицу со скидкой
+                      type: float
+                      example: 900.00
+                    amount: 
+                      description: Количество
+                      type: float
+                      example: 1.00
+
+  securitySchemes:
+    token:
+      type: token
+      name: token
+      in: queryParams
